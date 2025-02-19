@@ -28,6 +28,7 @@ void print_usage(char *program_name) {
            "    -w, --warn          Print WARN messages     \n"
            "    -e, --error         Print ERROR messages    \n"
            "    -a, --all           Prints all messages     \n"
+           "    -n, --no-color      Disables color at output\n"
            "    -h, --help          Prints this message     \n");
 }
 
@@ -36,6 +37,7 @@ int main(int argc, char **argv) {
     int opt;
     log_types_t log_types = 0;
     size_t print_all = 0;
+    size_t no_color = 0;
     char *program_name = argv[0];
 
     static struct option long_options[] = {
@@ -44,11 +46,12 @@ int main(int argc, char **argv) {
         {"warn", no_argument, 0, 'w'},
         {"error", no_argument, 0, 'e'},
         {"all", no_argument, 0, 'a'},
+        {"no-color", no_argument, 0, 'n'},
         {"help", no_argument, 0, 'h'},
         {0, 0, 0, 0},
     };
 
-    while ((opt = getopt_long(argc, argv, "dtweah", long_options, NULL)) != -1) {
+    while ((opt = getopt_long(argc, argv, "dtweahn", long_options, NULL)) != -1) {
         switch (opt) {
         case 'd':
             log_types |= LOG_DEBUG;
@@ -68,6 +71,10 @@ int main(int argc, char **argv) {
 
         case 'a':
             print_all = 1;
+            break;
+
+        case 'n':
+            no_color = 1;
             break;
 
         case 'h':
@@ -169,7 +176,10 @@ int main(int argc, char **argv) {
                         (log_types & LOG_TRACE && strstr(buffer, "TRACE") != NULL) ||
                         (log_types & LOG_WARN && strstr(buffer, "WARN") != NULL) ||
                         (log_types & LOG_ERROR && strstr(buffer, "ERROR") != NULL)) {
-                        if (strstr(buffer, "DEBUG") != NULL) {
+
+                        if (no_color) {
+                            printf("%s", buffer);
+                        } else if (strstr(buffer, "DEBUG") != NULL) {
                             printf("\033[34m%s\033[0m", buffer);
                         } else if (strstr(buffer, "LOG") != NULL) {
                             printf("\033[32m%s\033[0m", buffer);
