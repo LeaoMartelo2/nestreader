@@ -181,7 +181,7 @@ int main(int argc, char **argv) {
                 while (fgets(buffer, BUFFER_SIZE, file)) {
                     if (print_all ||
                         (log_types & LOG_DEBUG && strstr(buffer, "DEBUG") != NULL) ||
-                        (log_types & LOG_TRACE && strstr(buffer, "TRACE") != NULL) ||
+                        (log_types & LOG_TRACE && strstr(buffer, "LOG") != NULL) ||
                         (log_types & LOG_WARN && strstr(buffer, "WARN") != NULL) ||
                         (log_types & LOG_ERROR && strstr(buffer, "ERROR") != NULL)) {
 
