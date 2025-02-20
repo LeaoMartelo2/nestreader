@@ -40,6 +40,22 @@ void print_usage(char *program_name) {
            "    -h, --help          Prints this message     \n");
 }
 
+int create_file_if_dosent_exist(char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        file = fopen(filename, "w");
+        if (!file) {
+            perror("Error creating file");
+            return 1;
+        }
+        fclose(file);
+    } else {
+        fclose(file);
+    }
+
+    return 0;
+}
+
 int main(int argc, char **argv) {
 
     int opt;
@@ -103,6 +119,11 @@ int main(int argc, char **argv) {
     }
 
     char *filename = argv[optind];
+
+    if (create_file_if_dosent_exist(filename) != 0) {
+        printf("Failed to create file.\n");
+        return 1;
+    }
 
     FILE *file = fopen(filename, "r");
     if (!file) {
